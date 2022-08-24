@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+     * {
+      box-sizing: border-box;
+    }
+
+.row{
+    
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width:100%;
+	flex-wrap: wrap;
+    position: relative;
+}
+section{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+}
+.column {
+   
+  width: 20%;
+  margin-top: 20px;
+  margin-left: 10px;
+  height: 200px; 
+  border: 1px solid black;
+  
+}
+
+
+.active1{
+  animation: nav 0.5s linear forwards;
+}
+.column:hover {
+  animation: nav 0.5s linear forwards;
+}
+@keyframes nav {
+  to {
+    box-shadow: 5px 5px 2px black;
+  }
+}
+
+.row:after {
+  content: "";
+  display: table;
+  clear: both;
+}
+    </style>
+</head>
+<body>
+    <section>
+        <h2>Simple grid system using html and javascript</h2>
+        <h4>Click on windows to use arrow keys </h4>
+    </section>
+      <div id="row" class="row">
+       <div id="0" class="column active"></div>
+       <div id="1" class="column"></div>
+       <div id="2" class="column"></div>
+       <div id="3" class="column"></div>
+       <div id="4" class="column"></div>
+       <div id="5" class="column"></div>
+       <div id="6" class="column"></div>
+       <div id="7" class="column"></div>
+      
+      </div>
+
+
+
+      <script>
+        
+         var COLORS = [
+            '#ffb6c1',
+            '#ff00ff',
+            '#ffe4c4',
+            '#8a2be2',
+            '#00ffff',
+            '#e6e6fa',
+            '#d3d3d3',
+            ];
+    
+    //create
+   for(var i=0;i<8;i++){
+    var tt=document.createElement('div');
+    tt.className="column";
+    tt.id=i;
+
+   }
+    const t=document.querySelectorAll(".column")
+    t.forEach(function(t){
+      t.style.backgroundColor =COLORS[Math.floor(Math.random() * COLORS.length)];
+    });
+  
+    function insider() {
+	// refined add event cross browser
+	function addEvent(elem, event, fn) {
+		if (typeof elem === "string") {
+			elem = document.getElementById(elem);
+		}
+
+	
+		function listenHandler(e) {
+			var ret = fn.apply(this, arguments);
+			if (ret === false) {
+				e.stopPropagation();
+				e.preventDefault();
+			}
+			return(ret);
+		}
+		
+		function attachHandler() {
+		
+			var ret = fn.call(elem, window.event);   
+			if (ret === false) {
+				window.event.returnValue = false;
+				window.event.cancelBubble = true;
+			}
+			return(ret);
+		}
+
+		if (elem.addEventListener) {
+			elem.addEventListener(event, listenHandler, false);
+		} else {
+			elem.attachEvent("on" + event, attachHandler);
+		}
+	}
+
+
+
+    function addClass(elem, cls) {
+        var oldCls = elem.className;
+        if (oldCls) {
+            oldCls += " ";
+        }
+        elem.className = oldCls + cls;
+    }
+    
+    function removeClass(elem, cls) {
+        var str = " " + elem.className + " ";
+        elem.className = str.replace(" " + cls + " ", " ").replace(/^\s+|\s+$/g, "");
+    }
+    
+    
+    function findItem(items, target) {
+        for (var i = 0; i < items.length; i++) {
+            if (items[i] === target) {
+                return(i);
+            }
+        }
+        return(-1);
+    }
+    
+    var keys = {up: 38, down: 40, left: 37, right: 39};
+    var cards = document.getElementById("row").getElementsByClassName("column");
+    addEvent(document, "keydown", function(e) { 
+	
+		var code = e.which || e.keyCode;
+		
+		var width = 4;
+		var increment, index, newIndex, active;
+		
+		switch(code) {
+			case keys.up:
+				increment = -width;
+				break;
+			case keys.down:
+				increment = width;
+				break;
+			case keys.left:
+				increment = -1;
+				break;
+			case keys.right:
+				increment = 1;
+				break;
+			default:
+				increment = 0;
+				break;
+		}
+		if (increment !== 0) {
+			active = document.getElementById("row").getElementsByClassName("active")[0];
+			index = findItem(cards, active);
+			newIndex = index + increment;
+			if (newIndex >= 0 && newIndex < cards.length) {
+				removeClass(active, "active1");
+        removeClass(active, "active");
+				addClass(cards[newIndex], "active1");
+        addClass(cards[newIndex], "active");
+			}
+		
+			return false;
+		}
+    });
+}
+window.addEventListener('click', function(e){   
+    insider();
+});
+      </script>
+</body>
+</html>
